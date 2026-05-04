@@ -70,7 +70,9 @@ button{
 </div>
 
 <div class="container">
-
+<div class="card" style="text-align:center">
+  ⏱ เวลาที่เหลือ: <b id="timer">120:00</b>
+</div>
 <div id="quiz"></div>
 
 <div class="card">
@@ -125,144 +127,165 @@ button{
 
 <script>
 
-/* ===== QUESTIONS (120 ข้อ) ===== */
+let time = 120 * 60; // 120 นาที
+
+function updateTimer(){
+  const min = Math.floor(time / 60);
+  const sec = time % 60;
+
+  document.getElementById("timer").innerText =
+    `${min}:${sec < 10 ? "0"+sec : sec}`;
+
+  if(time <= 0){
+    submitExam();
+    alert("หมดเวลาแล้ว ระบบส่งข้อสอบอัตโนมัติ");
+    return;
+  }
+
+  time--;
+}
+
+setInterval(updateTimer,1000);
+  
 const questions = [
 
-/* ===== HIGHWAY (1–40) ===== */
-{q:"หากออกแบบทางโค้งโดย superelevation ไม่พอ จะเกิดอะไร",options:["รถมีโอกาสหลุดโค้ง","รถช้าลง","ไม่เกิดผล","ลดแรงเสียดทาน"],a:0},
-{q:"หากเพิ่ม design speed แต่ไม่เพิ่ม radius จะเกิดอะไร",options:["โค้งอันตรายขึ้น","ปลอดภัยขึ้น","ไม่เปลี่ยน","ลดแรงเหวี่ยง"],a:0},
-{q:"Stopping sight distance เพิ่มขึ้นเมื่อใด",options:["ความเร็วเพิ่ม","lane เพิ่ม","slope ลด","none"],a:0},
-{q:"ถ้า friction ลด ต้องแก้ไขอย่างไร",options:["เพิ่ม superelevation","ลด lane","ลด width","none"],a:0},
-{q:"shoulder มีความสำคัญเพราะอะไร",options:["เพิ่มความปลอดภัย","เพิ่ม speed","ลด cost","none"],a:0},
 
-{q:"grade สูงมีผลต่อรถบรรทุกอย่างไร",options:["ความเร็วลดลง","เพิ่มขึ้น","ไม่เปลี่ยน","none"],a:0},
-{q:"alignment ที่ดีควรเป็นอย่างไร",options:["ปลอดภัยและต่อเนื่อง","เร็ว","ถูก","none"],a:0},
-{q:"flexible pavement เหมาะกับกรณีใด",options:["ต้องกระจายแรง","โหลดต่ำ","ไม่มีรถ","none"],a:0},
-{q:"subgrade อ่อนต้องทำอย่างไร",options:["เพิ่มความหนา","ลด","none","random"],a:0},
-{q:"rutting เกิดจากอะไร",options:["การเสียรูปสะสม","น้ำ","ลม","none"],a:0},
+/* ===== HIGHWAY (1–30) ===== */
+{q:"หาก superelevation ไม่เพียงพอ จะเกิดอะไร",options:["รถมีโอกาสหลุดโค้ง","รถหยุดได้ดีขึ้น","ไม่ส่งผล"],a:0},
+{q:"SSD จะเพิ่มขึ้นเมื่อใด",options:["ความเร็วเพิ่ม","lane เพิ่ม","traffic ลด"],a:0},
+{q:"friction ลดลงในโค้ง ต้องแก้ด้วยอะไร",options:["เพิ่ม superelevation","ลด lane","เพิ่ม slope"],a:0},
+{q:"เพิ่ม lane ส่งผลต่อ capacity อย่างไร",options:["เพิ่มขึ้น","ลดลง","ไม่เปลี่ยน"],a:0},
+{q:"radius น้อยใช้ความเร็วสูง จะเกิดอะไร",options:["เสี่ยงหลุดโค้ง","ปลอดภัย","แรงเสียดทานลด"],a:0},
 
-{q:"radius มากขึ้นส่งผลอย่างไร",options:["โค้งกว้าง","แคบ","none","random"],a:0},
-{q:"lane width มาตรฐานคือเท่าไร",options:["3.5 m","2.5","4.0","none"],a:0},
-{q:"camber ใช้เพื่ออะไร",options:["ระบายน้ำ","speed","lane","none"],a:0},
-{q:"median ใช้เพื่ออะไร",options:["แยกทิศทาง","speed","lane","none"],a:0},
-{q:"AADT คืออะไร",options:["ค่าเฉลี่ยรายปี","สูงสุด","ต่ำสุด","none"],a:0},
+{q:"shoulder มีหน้าที่อะไร",options:["เพิ่มความปลอดภัย","เพิ่มความเร็ว","ลดต้นทุน"],a:0},
+{q:"median ใช้เพื่ออะไร",options:["แยกทิศทาง","เพิ่ม speed","ลด density"],a:0},
+{q:"camber ใช้เพื่ออะไร",options:["ระบายน้ำ","เพิ่มแรง","ลดแรง"],a:0},
+{q:"flexible pavement กระจายแรงอย่างไร",options:["ลงชั้นล่าง","สะสมบนผิว","กระจายขึ้น"],a:0},
+{q:"subgrade อ่อนควรทำอย่างไร",options:["เพิ่ม thickness","ลด thickness","ไม่ทำอะไร"],a:0},
 
-{q:"design vehicle ใช้เพื่ออะไร",options:["ออกแบบถนน","speed","lane","none"],a:0},
-{q:"minimum radius ขึ้นกับอะไร",options:["speed,e,f","lane","width","none"],a:0},
-{q:"vertical curve ใช้ควบคุมอะไร",options:["slope","speed","lane","none"],a:0},
-{q:"crest curve คืออะไร",options:["จุดสูง","ต่ำ","none","random"],a:0},
-{q:"sag curve คืออะไร",options:["จุดต่ำ","สูง","none","random"],a:0},
+{q:"rutting เกิดจากอะไร",options:["การเสียรูปสะสม","แรงลม","น้ำ"],a:0},
+{q:"design speed มีไว้เพื่ออะไร",options:["กำหนดมาตรฐาน","วัดจริง","ควบคุม"],a:0},
+{q:"grade สูงส่งผลอะไร",options:["รถช้าลง","รถเร็วขึ้น","ไม่เปลี่ยน"],a:0},
+{q:"alignment ที่ดีต้องเป็นอย่างไร",options:["ปลอดภัย","สั้นที่สุด","โค้งมาก"],a:0},
+{q:"transition curve ใช้เพื่ออะไร",options:["ลด jerk","เพิ่ม speed","ลดแรง"],a:0},
 
-{q:"rigid pavement ใช้วัสดุอะไร",options:["คอนกรีต","ทราย","ดิน","none"],a:0},
-{q:"subbase มีหน้าที่อะไร",options:["รองรับ+ระบายน้ำ","lane","speed","none"],a:0},
-{q:"overlay ใช้เพื่ออะไร",options:["เพิ่มอายุถนน","speed","lane","none"],a:0},
-{q:"skid resistance คืออะไร",options:["ความปลอดภัย","speed","lane","none"],a:0},
-{q:"access control มีผลอย่างไร",options:["ลดจุดตัด","เพิ่ม","none","random"],a:0},
+{q:"overtaking sight distance ใช้เมื่อใด",options:["แซง","หยุด","เลี้ยว"],a:0},
+{q:"cross slope ปกติเท่าไร",options:["ประมาณ 2%","10%","0%"],a:0},
+{q:"access control ช่วยอะไร",options:["ลด conflict","เพิ่มทางเข้า","เพิ่มความเร็ว"],a:0},
+{q:"expressway มีลักษณะอย่างไร",options:["ควบคุมเข้าออก","มีทางตัด","ใช้ชุมชน"],a:0},
+{q:"arterial road มีหน้าที่อะไร",options:["รองรับ traffic สูง","เข้าบ้าน","ใช้ในหมู่บ้าน"],a:0},
 
-{q:"expressway มีลักษณะอย่างไร",options:["ควบคุมเข้าออก","local","none","random"],a:0},
-{q:"collector road มีหน้าที่อะไร",options:["เชื่อมเส้นทาง","speed","lane","none"],a:0},
-{q:"SSD ขึ้นกับอะไร",options:["speed,time,friction","lane","width","none"],a:0},
-{q:"cross slope ปกติเท่าไร",options:["2%","1%","5%","none"],a:0},
-{q:"transition curve ใช้เพื่ออะไร",options:["ลด jerk","speed","lane","none"],a:0},
+{q:"collector road ทำหน้าที่อะไร",options:["เชื่อมเส้นทาง","รองรับหลัก","ไม่มีบทบาท"],a:0},
+{q:"SSD ขึ้นกับอะไร",options:["speed,time,friction","lane","width"],a:0},
+{q:"vertical curve ใช้เพื่ออะไร",options:["ควบคุม slope","เพิ่ม speed","ลด lane"],a:0},
+{q:"crest curve คืออะไร",options:["จุดสูง","จุดต่ำ","จุดราบ"],a:0},
+{q:"sag curve คืออะไร",options:["จุดต่ำ","จุดสูง","จุดราบ"],a:0},
 
-{q:"overtaking sight distance ใช้เมื่อใด",options:["แซง","หยุด","none","random"],a:0},
-{q:"traffic lane คืออะไร",options:["ช่องจราจร","ไหล่ทาง","none","random"],a:0},
-{q:"ROW คืออะไร",options:["เขตทาง","ป่า","น้ำ","none"],a:0},
-{q:"safety factor ใช้เพื่ออะไร",options:["ลดความเสี่ยง","speed","lane","none"],a:0},
-{q:"drainage สำคัญเพราะอะไร",options:["ป้องกันน้ำ","speed","lane","none"],a:0},
+{q:"rigid pavement ใช้วัสดุอะไร",options:["คอนกรีต","ดิน","ทราย"],a:0},
+{q:"subbase มีหน้าที่อะไร",options:["รองรับและระบายน้ำ","เพิ่ม speed","ลดแรง"],a:0},
+{q:"overlay ใช้เพื่ออะไร",options:["เพิ่มอายุถนน","ลด thickness","ลดแรง"],a:0},
+{q:"skid resistance คืออะไร",options:["ความต้านการลื่น","แรงลม","แรงโน้ม"],a:0},
+{q:"functional classification ใช้เพื่ออะไร",options:["แบ่งประเภทถนน","เพิ่ม speed","ลด lane"],a:0},
 
-{q:"design consistency คืออะไร",options:["ความสม่ำเสมอ","speed","lane","none"],a:0},
-{q:"accident rate ใช้เพื่ออะไร",options:["วิเคราะห์อุบัติเหตุ","speed","lane","none"],a:0},
-{q:"functional classification ใช้เพื่ออะไร",options:["แบ่งหน้าที่ถนน","speed","lane","none"],a:0},
-{q:"arterial road มีหน้าที่อะไร",options:["รองรับปริมาณสูง","local","none","random"],a:0},
-{q:"local road มีหน้าที่อะไร",options:["เข้าถึงพื้นที่","speed","none","random"],a:0},
+/* ===== TRAFFIC (31–60) ===== */
+{q:"density เพิ่ม speed จะเป็นอย่างไร",options:["ลดลง","เพิ่มขึ้น","เท่าเดิม"],a:0},
+{q:"LOS ลดลงหมายถึงอะไร",options:["จราจรแย่ลง","ดีขึ้น","ไม่เปลี่ยน"],a:0},
+{q:"headway ลด flow จะเป็นอย่างไร",options:["เพิ่ม","ลด","ไม่เปลี่ยน"],a:0},
+{q:"traffic volume คืออะไร",options:["จำนวนรถ","ความเร็ว","ระยะ"],a:0},
+{q:"queue คืออะไร",options:["รถสะสม","รถวิ่ง","รถแซง"],a:0},
 
-/* ===== TRAFFIC (41–70) ===== */
-{q:"LOS ลดลงเกิดจากอะไร",options:["density เพิ่ม","speed เพิ่ม","none","random"],a:0},
-{q:"density สูงหมายถึงอะไร",options:["รถหนาแน่น","โล่ง","none","random"],a:0},
-{q:"traffic volume คืออะไร",options:["จำนวนรถ","speed","none","random"],a:0},
-{q:"headway คืออะไร",options:["ช่วงเวลา","ระยะ","none","random"],a:0},
-{q:"queue คืออะไร",options:["รถติด","โล่ง","none","random"],a:0},
+{q:"conflict ที่อันตรายสุดคืออะไร",options:["crossing","merge","diverge"],a:0},
+{q:"weaving คืออะไร",options:["merge+diverge","หยุด","เร่ง"],a:0},
+{q:"signal ใช้เพื่ออะไร",options:["ควบคุม traffic","เพิ่ม speed","ลด lane"],a:0},
+{q:"yellow time คืออะไร",options:["ช่วงเตือน","หยุด","เร่ง"],a:0},
+{q:"peak hour คืออะไร",options:["ช่วงหนาแน่น","ช่วงโล่ง","กลางคืน"],a:0},
 
-{q:"conflict อันตรายสุดคืออะไร",options:["crossing","merge","none","random"],a:0},
-{q:"weaving คืออะไร",options:["merge+diverge","cross","none","random"],a:0},
-{q:"signal ใช้เพื่ออะไร",options:["ควบคุมจราจร","speed","none","random"],a:0},
-{q:"yellow time คืออะไร",options:["เตือน","หยุด","none","random"],a:0},
-{q:"peak hour คืออะไร",options:["ช่วงรถหนาแน่น","โล่ง","none","random"],a:0},
+{q:"speed-density relation เป็นแบบใด",options:["ผกผัน","ตรง","ไม่เกี่ยว"],a:0},
+{q:"flow คืออะไร",options:["จำนวนรถ/เวลา","speed","distance"],a:0},
+{q:"gap acceptance ใช้ที่ไหน",options:["intersection","ทางตรง","ทางโค้ง"],a:0},
+{q:"traffic delay คืออะไร",options:["เวลาสูญเสีย","speed","distance"],a:0},
+{q:"capacity คืออะไร",options:["ปริมาณสูงสุด","speed สูงสุด","distance"],a:0},
 
-{q:"speed-density relation เป็นอย่างไร",options:["ผกผัน","ตรง","none","random"],a:0},
-{q:"flow คืออะไร",options:["จำนวนรถ","speed","none","random"],a:0},
-{q:"gap acceptance ใช้ในอะไร",options:["intersection","speed","none","random"],a:0},
-{q:"traffic control device คืออะไร",options:["sign/signal","lane","none","random"],a:0},
-{q:"sight triangle ใช้เพื่ออะไร",options:["ความปลอดภัย","speed","none","random"],a:0},
+{q:"PHF คืออะไร",options:["peak hour factor","speed factor","flow factor"],a:0},
+{q:"lane เพิ่มเกิดอะไร",options:["capacity เพิ่ม","ลด","ไม่เปลี่ยน"],a:0},
+{q:"roundabout ลดอะไร",options:["conflict","speed","distance"],a:0},
+{q:"merge คืออะไร",options:["รวมช่อง","แยกช่อง","หยุด"],a:0},
+{q:"diverge คืออะไร",options:["แยกช่อง","รวมช่อง","เร่ง"],a:0},
 
-{q:"queue length คืออะไร",options:["ความยาวคิว","speed","none","random"],a:0},
-{q:"average speed คืออะไร",options:["ค่าเฉลี่ย","สูงสุด","none","random"],a:0},
-{q:"free flow speed คืออะไร",options:["ไม่มีรบกวน","ติด","none","random"],a:0},
-{q:"jam density คืออะไร",options:["หนาแน่นสูงสุด","ต่ำ","none","random"],a:0},
-{q:"traffic delay คืออะไร",options:["เวลาสูญเสีย","speed","none","random"],a:0},
+{q:"human factor คืออะไร",options:["ผู้ขับขี่","ถนน","รถ"],a:0},
+{q:"free flow เกิดเมื่อใด",options:["density ต่ำ","สูง","jam"],a:0},
+{q:"jam density คืออะไร",options:["หนาแน่นสูงสุด","ต่ำสุด","ปกติ"],a:0},
+{q:"average speed คืออะไร",options:["ค่าเฉลี่ย","สูงสุด","ต่ำสุด"],a:0},
+{q:"queue length คืออะไร",options:["ความยาวคิว","speed","flow"],a:0},
 
-{q:"capacity คืออะไร",options:["ปริมาณสูงสุด","speed","none","random"],a:0},
-{q:"PHF คืออะไร",options:["peak hour factor","speed","none","random"],a:0},
-{q:"lane เพิ่มมีผลอะไร",options:["capacity เพิ่ม","speed ลด","none","random"],a:0},
-{q:"signal spacing มีผลอะไร",options:["delay","speed","none","random"],a:0},
-{q:"intersection control มีแบบใด",options:["signal/stop","none","random","none"],a:0},
+{q:"traffic safety ขึ้นกับอะไร",options:["human/road/vehicle","road only","vehicle only"],a:0},
+{q:"sight triangle ใช้เพื่ออะไร",options:["ความปลอดภัย","speed","lane"],a:0},
+{q:"control device คืออะไร",options:["sign/signal","lane","road"],a:0},
+{q:"intersection control มีอะไร",options:["signal/stop","speed","lane"],a:0},
+{q:"traffic sign ใช้เพื่ออะไร",options:["สื่อสาร","ตกแต่ง","ลดน้ำหนัก"],a:0},
 
-{q:"roundabout ลดอะไร",options:["conflict","speed","none","random"],a:0},
-{q:"merge area คืออะไร",options:["รวมช่อง","แยก","none","random"],a:0},
-{q:"diverge คืออะไร",options:["แยกช่อง","รวม","none","random"],a:0},
-{q:"traffic safety ขึ้นกับอะไร",options:["human/road/vehicle","none","random","none"],a:0},
-{q:"human factor คืออะไร",options:["ผู้ขับขี่","ถนน","รถ","none"],a:0},
+/* ===== SURVEY (61–90) ===== */
+{q:"benchmark คืออะไร",options:["จุดอ้างอิงระดับ","จุดเริ่ม","จุดจบ"],a:0},
+{q:"backsight ใช้เพื่ออะไร",options:["อ้างอิง","วัดใหม่","คำนวณ"],a:0},
+{q:"foresight ใช้เพื่ออะไร",options:["หาค่าใหม่","อ้างอิง","ตรวจ"],a:0},
+{q:"traverse ใช้เพื่ออะไร",options:["หาพิกัด","วัดแรง","วัดน้ำ"],a:0},
+{q:"station ใช้เพื่ออะไร",options:["กำหนดตำแหน่ง","วัด speed","วัดแรง"],a:0},
 
-/* ===== SURVEY (71–90) ===== */
-{q:"benchmark คืออะไร",options:["จุดอ้างอิงระดับ","speed","none","random"],a:0},
-{q:"backsight ใช้เพื่ออะไร",options:["อ้างอิง","none","random","none"],a:0},
-{q:"foresight ใช้เพื่ออะไร",options:["หาค่าใหม่","none","random","none"],a:0},
-{q:"traverse ใช้เพื่ออะไร",options:["หาพิกัด","none","random","none"],a:0},
-{q:"station ใช้เพื่ออะไร",options:["กำหนดตำแหน่ง","none","random","none"],a:0},
+{q:"ระยะ 2+150 ถึง 5+300 เท่ากับ",options:["3150 m","2150","5300"],a:0},
+{q:"closing error คืออะไร",options:["ความคลาดเคลื่อน","ความเร็ว","ระยะ"],a:0},
+{q:"leveling ใช้เพื่ออะไร",options:["หาระดับ","หาระยะ","หาความเร็ว"],a:0},
+{q:"theodolite ใช้ทำอะไร",options:["วัดมุม","วัดน้ำหนัก","วัดแรง"],a:0},
+{q:"total station ใช้ทำอะไร",options:["มุม+ระยะ","เวลา","น้ำ"],a:0},
 
-{q:"ระยะ 2+150 ถึง 5+300 เท่ากับ",options:["3150 m","2150","5300","none"],a:0},
-{q:"chainage คืออะไร",options:["ระยะตามแนว","none","random","none"],a:0},
-{q:"theodolite ใช้ทำอะไร",options:["วัดมุม","none","random","none"],a:0},
-{q:"total station ใช้ทำอะไร",options:["วัดระยะ+มุม","none","random","none"],a:0},
-{q:"GPS survey ใช้ทำอะไร",options:["พิกัด","none","random","none"],a:0},
+{q:"GPS survey ใช้เพื่ออะไร",options:["พิกัด","speed","distance"],a:0},
+{q:"map scale คืออะไร",options:["อัตราส่วน","ความเร็ว","ระยะ"],a:0},
+{q:"contour คืออะไร",options:["เส้นระดับ","เส้นตรง","เส้นโค้ง"],a:0},
+{q:"azimuth คืออะไร",options:["มุมทิศ","ความเร็ว","แรง"],a:0},
+{q:"bearing คืออะไร",options:["ทิศทาง","distance","speed"],a:0},
 
-{q:"error มีกี่ประเภท",options:["random/systematic/gross","none","random","none"],a:0},
-{q:"leveling ใช้เพื่ออะไร",options:["หาระดับ","none","random","none"],a:0},
-{q:"instrument height คืออะไร",options:["ระดับเครื่อง","none","random","none"],a:0},
-{q:"reduced level คืออะไร",options:["ระดับคำนวณ","none","random","none"],a:0},
-{q:"closing error คืออะไร",options:["ความคลาดเคลื่อน","none","random","none"],a:0},
+{q:"instrument height คืออะไร",options:["ระดับเครื่อง","ระดับดิน","ระดับน้ำ"],a:0},
+{q:"reduced level คืออะไร",options:["ระดับคำนวณ","ระดับจริง","ระดับน้ำ"],a:0},
+{q:"control point คืออะไร",options:["จุดควบคุม","จุดเริ่ม","จุดจบ"],a:0},
+{q:"chainage คืออะไร",options:["ระยะตามแนว","speed","force"],a:0},
+{q:"error survey มีกี่แบบ",options:["3 แบบ","2 แบบ","1 แบบ"],a:0},
 
-{q:"map scale คืออะไร",options:["อัตราส่วน","none","random","none"],a:0},
-{q:"contour line คืออะไร",options:["เส้นระดับ","none","random","none"],a:0},
-{q:"azimuth คืออะไร",options:["มุมทิศ","none","random","none"],a:0},
-{q:"bearing คืออะไร",options:["ทิศทาง","none","random","none"],a:0},
-{q:"control point คืออะไร",options:["จุดควบคุม","none","random","none"],a:0},
+{q:"random error คืออะไร",options:["สุ่ม","คงที่","ไม่มี"],a:0},
+{q:"systematic error คืออะไร",options:["มี pattern","สุ่ม","ไม่มี"],a:0},
+{q:"gross error คืออะไร",options:["ผิดพลาดใหญ่","เล็ก","ไม่มี"],a:0},
+{q:"levelling staff ใช้ทำอะไร",options:["วัดระดับ","วัดแรง","วัดน้ำ"],a:0},
+{q:"benchmark ผิดจะเกิดอะไร",options:["ค่าระดับผิด","ถูกต้อง","ไม่เปลี่ยน"],a:0},
 
 /* ===== SOIL + LAW (91–120) ===== */
-{q:"CBR ต่ำส่งผลอะไร",options:["ต้องเพิ่ม thickness","none","random","none"],a:0},
-{q:"compaction ดีส่งผลอะไร",options:["strength เพิ่ม","none","random","none"],a:0},
-{q:"permeability สูงหมายถึงอะไร",options:["น้ำผ่านง่าย","none","random","none"],a:0},
-{q:"bearing capacity ต่ำเกิดอะไร",options:["ทรุดตัว","none","random","none"],a:0},
-{q:"plasticity index สูงคืออะไร",options:["ดินเหนียว","none","random","none"],a:0},
+{q:"CBR ต่ำส่งผลอะไร",options:["ต้องเพิ่ม thickness","ลด","ไม่เปลี่ยน"],a:0},
+{q:"compaction ดีส่งผลอะไร",options:["strength เพิ่ม","ลด","ไม่เปลี่ยน"],a:0},
+{q:"permeability สูงคืออะไร",options:["น้ำผ่านง่าย","ไม่ผ่าน","ขัง"],a:0},
+{q:"bearing capacity ต่ำเกิดอะไร",options:["ทรุด","แข็ง","ไม่เปลี่ยน"],a:0},
+{q:"plasticity index สูงคืออะไร",options:["ดินเหนียว","ทราย","หิน"],a:0},
 
-{q:"clay มีลักษณะอย่างไร",options:["plastic","none","random","none"],a:0},
-{q:"sand มีลักษณะอย่างไร",options:["granular","none","random","none"],a:0},
-{q:"consolidation คืออะไร",options:["ทรุดตัว","none","random","none"],a:0},
-{q:"void ratio คืออะไร",options:["ช่องว่าง","none","random","none"],a:0},
-{q:"unit weight คืออะไร",options:["น้ำหนัก/ปริมาตร","none","random","none"],a:0},
+{q:"clay มีลักษณะอย่างไร",options:["plastic","granular","แข็ง"],a:0},
+{q:"sand มีลักษณะอย่างไร",options:["granular","plastic","เหนียว"],a:0},
+{q:"void ratio คืออะไร",options:["ช่องว่าง","น้ำ","แรง"],a:0},
+{q:"unit weight คืออะไร",options:["น้ำหนัก/ปริมาตร","แรง","speed"],a:0},
+{q:"consolidation คืออะไร",options:["ทรุดตัว","ยืด","ขยาย"],a:0},
 
-{q:"ทางหลวงแผ่นดินมีหน้าที่อะไร",options:["เชื่อมภูมิภาค","none","random","none"],a:0},
-{q:"ROW สำคัญเพราะอะไร",options:["กำหนดเขตทาง","none","random","none"],a:0},
-{q:"การเวนคืนมีไว้เพื่ออะไร",options:["สร้างทาง","none","random","none"],a:0},
-{q:"access control ช่วยอะไร",options:["เพิ่มความปลอดภัย","none","random","none"],a:0},
-{q:"traffic law มีไว้เพื่ออะไร",options:["ความปลอดภัย","none","random","none"],a:0},
+{q:"ROW คืออะไร",options:["เขตทาง","เขตน้ำ","เขตป่า"],a:0},
+{q:"traffic law มีไว้เพื่ออะไร",options:["ความปลอดภัย","ความเร็ว","ความสวย"],a:0},
+{q:"road marking ใช้เพื่ออะไร",options:["กำหนดช่อง","เพิ่ม speed","ลดแรง"],a:0},
+{q:"traffic sign ใช้เพื่ออะไร",options:["สื่อสาร","ตกแต่ง","ลดน้ำหนัก"],a:0},
+{q:"highway safety เป้าหมายคืออะไร",options:["ลดอุบัติเหตุ","เพิ่ม speed","ลด cost"],a:0},
 
-{q:"road marking ใช้เพื่ออะไร",options:["กำหนดช่อง","none","random","none"],a:0},
-{q:"traffic sign ใช้เพื่ออะไร",options:["สื่อสาร","none","random","none"],a:0},
-{q:"highway safety มีเป้าหมายอะไร",options:["ลดอุบัติเหตุ","none","random","none"],a:0},
-{q:"design ต้องคำนึงถึงอะไร",options:["safety","speed","cost","ทั้งหมด"],a:3},
-{q:"ปัจจัยหลักของ road safety คืออะไร",options:["human/road/vehicle","none","random","none"],a:0}
+{q:"design ต้องคำนึงถึงอะไร",options:["safety","speed","cost"],a:0},
+{q:"road factor คืออะไร",options:["สภาพถนน","คน","รถ"],a:0},
+{q:"vehicle factor คืออะไร",options:["รถ","คน","ถนน"],a:0},
+{q:"human error คืออะไร",options:["ความผิดคนขับ","ถนน","รถ"],a:0},
+{q:"drainage สำคัญเพราะอะไร",options:["ป้องกันน้ำ","เพิ่ม speed","ลดแรง"],a:0},
+
+{q:"median barrier ใช้เพื่ออะไร",options:["กันชน","เพิ่ม speed","ลด lane"],a:0},
+{q:"guardrail ใช้เพื่ออะไร",options:["ความปลอดภัย","ตกแต่ง","ลดแรง"],a:0},
+{q:"speed limit มีไว้เพื่ออะไร",options:["ควบคุมความเร็ว","เพิ่ม speed","ลดรถ"],a:0},
+{q:"traffic enforcement คืออะไร",options:["บังคับใช้กฎหมาย","เพิ่ม speed","ลด lane"],a:0},
+{q:"safety audit คืออะไร",options:["ตรวจความปลอดภัย","เพิ่ม speed","ลด cost"],a:0}
+
 ];
 
 /* ===== RENDER ===== */
