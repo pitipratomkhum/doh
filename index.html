@@ -2,40 +2,130 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Mock Exam วิศวกรโยธา กรมทางหลวง</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock Exam วิศวกรโยธา | นายช่างหยก</title>
+
 <style>
-body{font-family:sans-serif;background:#f5f6f7;margin:0}
-.container{max-width:900px;margin:auto;padding:20px}
-.card{background:#fff;padding:20px;border-radius:10px;margin-bottom:20px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
-button{padding:10px 20px;border:none;border-radius:6px;background:#0b3d91;color:#fff;cursor:pointer}
-h1{color:#0b3d91}
+:root{
+  --primary:#0b3d91;
+  --bg:#f4f6f8;
+}
+
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:var(--bg);
+}
+
+.header{
+  background:var(--primary);
+  color:#fff;
+  text-align:center;
+  padding:20px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+.card{
+  background:#fff;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:var(--primary);
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.footer-grid{
+  display:grid;
+  gap:20px;
+  text-align:center;
+}
+
+.footer-box img{
+  width:200px;
+  margin-top:10px;
+}
 </style>
 </head>
+
 <body>
+
+<div class="header">
+  <h1>Mock Exam วิศวกรโยธา</h1>
+  <small>โดย นายช่างหยก</small>
+</div>
 
 <div class="container">
 
-<div class="card" id="emailBox">
-<h1>สอบวิศวกรโยธา (กรมทางหลวง)</h1>
-<input id="email" placeholder="กรอกอีเมลก่อนสอบ" style="width:100%;padding:10px;margin:10px 0">
-<button onclick="startExam()">เริ่มทำข้อสอบ</button>
+<div id="quiz"></div>
+
+<div class="card">
+  <input id="email" placeholder="กรอกอีเมลเพื่อดูคะแนน"
+    style="width:100%;padding:10px;margin-bottom:10px">
+  <button onclick="submitExam()">ส่งคำตอบ</button>
 </div>
 
-<div id="quiz"></div>
 <div id="result"></div>
+
+<!-- SELL -->
+<div class="card" style="text-align:center">
+  <h3>📚 แนวข้อสอบเพิ่มเติม</h3>
+
+  <a href="https://forms.gle/tvCYTiqe3ay66eMs5" target="_blank">
+    <button>แนวข้อสอบทางหลวง ปีล่าสุด</button>
+  </a><br><br>
+
+  <a href="https://forms.gle/tvCYTiqe3ay66eMs5" target="_blank">
+    <button>สรุปก่อนสอบ</button>
+  </a><br><br>
+
+  <a href="https://forms.gle/cNtvf2GDUSiCvF7V6" target="_blank">
+    <button>แนวข้อสอบทางหลวงชนบท</button>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<div class="card">
+  <div class="footer-grid">
+
+    <div class="footer-box">
+      <h3>📌 เพจ</h3>
+      <img src="image/logo.png">
+    </div>
+
+    <div class="footer-box">
+      <h3>📲 LINE</h3>
+      <img src="image/line.png">
+    </div>
+
+    <div class="footer-box">
+      <h3>💰 สนับสนุน</h3>
+      <p><b>QR Code: น.ส.กมลชนก เรือนคำ</b></p>
+      <img src="image/donate.png">
+    </div>
+
+  </div>
+</div>
 
 </div>
 
 <script>
 
-function startExam(){
- const email=document.getElementById("email").value;
- if(!email){alert("กรอกอีเมลก่อน");return;}
- localStorage.setItem("user_email",email);
- document.getElementById("emailBox").style.display="none";
- render();
-}
-
+/* ===== QUESTIONS (120 ข้อ) ===== */
 const questions = [
 
 /* ===== HIGHWAY (1–40) ===== */
@@ -175,8 +265,7 @@ const questions = [
 {q:"ปัจจัยหลักของ road safety คืออะไร",options:["human/road/vehicle","none","random","none"],a:0}
 ];
 
-];
-
+/* ===== RENDER ===== */
 function render(){
  const quiz=document.getElementById("quiz");
  quiz.innerHTML="";
@@ -188,32 +277,30 @@ function render(){
   html+="</div>";
   quiz.innerHTML+=html;
  });
- quiz.innerHTML+=`<button onclick="submitExam()">ส่งคำตอบ</button>`;
 }
+render();
 
+/* ===== SUBMIT ===== */
 function submitExam(){
+ const email=document.getElementById("email").value;
+
+ if(!email){
+  document.getElementById("result").innerHTML =
+  "<div class='card'><b style='color:red'>กรอกอีเมลก่อนดูคะแนน</b></div>";
+  return;
+ }
+
  let score=0;
  questions.forEach((q,i)=>{
   const ans=document.querySelector(`input[name=q${i}]:checked`);
   if(ans && parseInt(ans.value)===q.a) score++;
  });
 
- const email=localStorage.getItem("user_email");
-
- // 👉 เก็บลง Google Form (แก้ URL เอง)
- fetch("https://docs.google.com/forms/d/e/XXXX/formResponse",{
-  method:"POST",
-  mode:"no-cors",
-  body:new URLSearchParams({
-    "entry.123456":email,
-    "entry.654321":score
-  })
- });
-
- document.getElementById("result").innerHTML=
- `<div class='card'><h2>คะแนนของคุณ: ${score}/${questions.length}</h2></div>`;
+ document.getElementById("result").innerHTML =
+ `<div class='card'><h2>คะแนน: ${score}/${questions.length}</h2></div>`;
 }
 
 </script>
+
 </body>
 </html>
