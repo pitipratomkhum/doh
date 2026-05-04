@@ -1,315 +1,219 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mock Exam วิศวกรโยธา</title>
-
-  <!-- ฟอนต์ -->
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
-
-  <style>
-    body {
-      font-family: 'Prompt', sans-serif;
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-      background: #f4f6f8;
-      color: #1f2d3d;
-      border-top: 5px solid #0b3d2e;
-    }
-
-    h1 {
-      text-align: center;
-      color: #0b3d2e;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 25px;
-    }
-
-    .question {
-      background: #fff;
-      padding: 15px;
-      margin-bottom: 12px;
-      border-radius: 10px;
-      border: 1px solid #e0e6ed;
-    }
-
-    button {
-      padding: 12px 20px;
-      background: #0b3d2e;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .primary {
-      background: #b68b2c;
-    }
-
-    #overlay {
-      position: fixed;
-      top:0;left:0;right:0;bottom:0;
-      background: rgba(0,0,0,0.6);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:999;
-    }
-
-    #modal {
-      background:white;
-      padding:25px;
-      border-radius:10px;
-      width:300px;
-      text-align:center;
-    }
-
-    input {
-      width:100%;
-      padding:10px;
-      margin-bottom:10px;
-    }
-
-    #result {
-      text-align:center;
-      margin-top:20px;
-      font-size:20px;
-      color:#0b3d2e;
-    }
-
-    .footer {
-      margin-top:50px;
-      text-align:center;
-    }
-
-    .footer img {
-      width:110px;
-      margin:8px;
-    }
-
-    .buy-section {
-      margin-top:40px;
-      text-align:center;
-    }
-
-    .buy-section a {
-      display:block;
-      margin:10px;
-    }
-
-  </style>
+<meta charset="UTF-8">
+<title>Mock Exam วิศวกรโยธา กรมทางหลวง</title>
+<style>
+body{font-family:sans-serif;background:#f5f6f7;margin:0}
+.container{max-width:900px;margin:auto;padding:20px}
+.card{background:#fff;padding:20px;border-radius:10px;margin-bottom:20px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+button{padding:10px 20px;border:none;border-radius:6px;background:#0b3d91;color:#fff;cursor:pointer}
+h1{color:#0b3d91}
+</style>
 </head>
-
 <body>
 
-<h1>นายช่างหยก</h1>
-<div class="subtitle">แนวข้อสอบวิศวกรโยธาปฏิบัติการ • กรมทางหลวง</div>
+<div class="container">
 
-<!-- overlay -->
-<div id="overlay">
-  <div id="modal">
-    <h3>เริ่มทำข้อสอบ</h3>
-    <input type="email" id="email" placeholder="กรอกอีเมล">
-    <button onclick="unlockExam()">เริ่มสอบ</button>
-  </div>
+<div class="card" id="emailBox">
+<h1>สอบวิศวกรโยธา (กรมทางหลวง)</h1>
+<input id="email" placeholder="กรอกอีเมลก่อนสอบ" style="width:100%;padding:10px;margin:10px 0">
+<button onclick="startExam()">เริ่มทำข้อสอบ</button>
 </div>
 
 <div id="quiz"></div>
-
-<div style="text-align:center;">
-  <button onclick="submitQuiz()">ส่งคำตอบ</button>
-</div>
-
 <div id="result"></div>
 
-<!-- ปุ่มขาย -->
-<div class="buy-section">
-  <h3>📦 สั่งซื้อแนวข้อสอบ</h3>
-
-  <a href="https://forms.gle/tvCYTiqe3ay66eMs5" target="_blank">
-    <button class="primary">แนวข้อสอบเก่ากรมทางหลวง ปี 2566</button>
-  </a>
-
-  <a href="https://forms.gle/tvCYTiqe3ay66eMs5" target="_blank">
-    <button>สรุปก่อนสอบกรมทางหลวง</button>
-  </a>
-
-  <a href="https://forms.gle/cNtvf2GDUSiCvF7V6" target="_blank">
-    <button>แนวข้อสอบกรมทางหลวงชนบท</button>
-  </a>
-</div>
-
-<!-- footer -->
-<div class="footer">
-  <h3>สนับสนุน / ติดต่อ</h3>
-
-  <img src="images/logo.png">
-  <img src="images/line.png">
-  <img src="images/donate.png">
-
-  <p>
-    Facebook:
-    <a href="https://www.facebook.com/EntaneerYok" target="_blank">
-      EntaneerYok
-    </a>
-  </p>
 </div>
 
 <script>
-let userEmail = "";
 
-function unlockExam(){
-  const email = document.getElementById("email").value;
-  if(!email){
-    alert("กรุณากรอกอีเมล");
-    return;
-  }
-  userEmail = email;
-  document.getElementById("overlay").style.display = "none";
+function startExam(){
+ const email=document.getElementById("email").value;
+ if(!email){alert("กรอกอีเมลก่อน");return;}
+ localStorage.setItem("user_email",email);
+ document.getElementById("emailBox").style.display="none";
+ render();
 }
 
 const questions = [
 
-/* ===== HIGHWAY (1–50) ===== */
-{q:"ถนนที่ mobility สูงสุดคือ?",options:["Local","Collector","Arterial","Expressway"],answer:3},
-{q:"ถนนที่ accessibility สูงสุดคือ?",options:["Local","Collector","Arterial","Expressway"],answer:0},
-{q:"Superelevation ใช้ลดอะไร?",options:["แรงต้าน","แรงเหวี่ยง","แรงเสียดทาน","Slope"],answer:1},
-{q:"Reaction time มาตรฐาน?",options:["1.0","1.5","2.5","3.5"],answer:2},
-{q:"SSD ประกอบด้วย?",options:["Reaction+Braking","Speed+Time","Slope+Curve","Width"],answer:0},
-{q:"Overtaking sight distance ใช้เมื่อ?",options:["หยุด","แซง","เลี้ยว","กลับรถ"],answer:1},
-{q:"Curve ที่อันตรายสุด?",options:["Simple","Reverse","Compound","Broken back"],answer:1},
-{q:"Lane width มาตรฐาน?",options:["2.5","3.0","3.5","4.0"],answer:2},
-{q:"Camber ใช้เพื่อ?",options:["Drainage","Speed","Safety","Load"],answer:0},
-{q:"Cross slope โดยทั่วไป?",options:["1%","2%","5%","10%"],answer:1},
+/* ===== HIGHWAY (1–40) ===== */
+{q:"หากออกแบบทางโค้งโดย superelevation ไม่พอ จะเกิดอะไร",options:["รถมีโอกาสหลุดโค้ง","รถช้าลง","ไม่เกิดผล","ลดแรงเสียดทาน"],a:0},
+{q:"หากเพิ่ม design speed แต่ไม่เพิ่ม radius จะเกิดอะไร",options:["โค้งอันตรายขึ้น","ปลอดภัยขึ้น","ไม่เปลี่ยน","ลดแรงเหวี่ยง"],a:0},
+{q:"Stopping sight distance เพิ่มขึ้นเมื่อใด",options:["ความเร็วเพิ่ม","lane เพิ่ม","slope ลด","none"],a:0},
+{q:"ถ้า friction ลด ต้องแก้ไขอย่างไร",options:["เพิ่ม superelevation","ลด lane","ลด width","none"],a:0},
+{q:"shoulder มีความสำคัญเพราะอะไร",options:["เพิ่มความปลอดภัย","เพิ่ม speed","ลด cost","none"],a:0},
 
-{q:"Radius มากขึ้นจะเกิดอะไร?",options:["แคบ","กว้าง","อันตราย","ไม่เปลี่ยน"],answer:1},
-{q:"e_max ประมาณ?",options:["0.04","0.06","0.08","0.12"],answer:2},
-{q:"Design speed คือ?",options:["เฉลี่ย","ปลอดภัย","สูงสุด","ต่ำสุด"],answer:1},
-{q:"Stopping sight distance ขึ้นกับ?",options:["Speed","Time","Friction","ทั้งหมด"],answer:3},
-{q:"Friction factor ส่งผลต่อ?",options:["Width","SSD","Slope","Lane"],answer:1},
+{q:"grade สูงมีผลต่อรถบรรทุกอย่างไร",options:["ความเร็วลดลง","เพิ่มขึ้น","ไม่เปลี่ยน","none"],a:0},
+{q:"alignment ที่ดีควรเป็นอย่างไร",options:["ปลอดภัยและต่อเนื่อง","เร็ว","ถูก","none"],a:0},
+{q:"flexible pavement เหมาะกับกรณีใด",options:["ต้องกระจายแรง","โหลดต่ำ","ไม่มีรถ","none"],a:0},
+{q:"subgrade อ่อนต้องทำอย่างไร",options:["เพิ่มความหนา","ลด","none","random"],a:0},
+{q:"rutting เกิดจากอะไร",options:["การเสียรูปสะสม","น้ำ","ลม","none"],a:0},
 
-{q:"Horizontal curve ใช้ควบคุม?",options:["แนวราบ","แนวดิ่ง","Slope","Load"],answer:0},
-{q:"Vertical curve ใช้ควบคุม?",options:["Slope","Speed","Lane","Load"],answer:0},
-{q:"Crest curve เกี่ยวกับ?",options:["จุดสูง","จุดต่ำ","Slope","Lane"],answer:0},
-{q:"Sag curve เกี่ยวกับ?",options:["จุดต่ำ","จุดสูง","Slope","Speed"],answer:0},
-{q:"Design vehicle ใช้เพื่อ?",options:["Curve","Lane","Clearance","ทั้งหมด"],answer:3},
+{q:"radius มากขึ้นส่งผลอย่างไร",options:["โค้งกว้าง","แคบ","none","random"],a:0},
+{q:"lane width มาตรฐานคือเท่าไร",options:["3.5 m","2.5","4.0","none"],a:0},
+{q:"camber ใช้เพื่ออะไร",options:["ระบายน้ำ","speed","lane","none"],a:0},
+{q:"median ใช้เพื่ออะไร",options:["แยกทิศทาง","speed","lane","none"],a:0},
+{q:"AADT คืออะไร",options:["ค่าเฉลี่ยรายปี","สูงสุด","ต่ำสุด","none"],a:0},
 
-{q:"Minimum radius ขึ้นกับ?",options:["Speed","e","f","ทั้งหมด"],answer:3},
-{q:"Shoulder ใช้เพื่อ?",options:["Safety","Parking","Drainage","ทั้งหมด"],answer:3},
-{q:"Median ใช้เพื่อ?",options:["แยกทิศ","ลดอุบัติเหตุ","Reserve","ทั้งหมด"],answer:3},
-{q:"AADT คือ?",options:["เฉลี่ยรายปี","สูงสุด","ต่ำสุด","ชั่วโมง"],answer:0},
-{q:"Design hour volume คือ?",options:["Peak","Average","Min","None"],answer:0},
+{q:"design vehicle ใช้เพื่ออะไร",options:["ออกแบบถนน","speed","lane","none"],a:0},
+{q:"minimum radius ขึ้นกับอะไร",options:["speed,e,f","lane","width","none"],a:0},
+{q:"vertical curve ใช้ควบคุมอะไร",options:["slope","speed","lane","none"],a:0},
+{q:"crest curve คืออะไร",options:["จุดสูง","ต่ำ","none","random"],a:0},
+{q:"sag curve คืออะไร",options:["จุดต่ำ","สูง","none","random"],a:0},
 
-{q:"Grade สูงจะ?",options:["ช้าลง","เร็วขึ้น","เท่าเดิม","ไม่เกี่ยว"],answer:0},
-{q:"Sight distance สำคัญเพราะ?",options:["Safety","Speed","Cost","Design"],answer:0},
-{q:"Alignment ที่ดีต้อง?",options:["สั้น","ตรง","ปลอดภัย","ทั้งหมด"],answer:3},
-{q:"Functional classification คือ?",options:["Mobility","Access","ทั้งสอง","None"],answer:2},
-{q:"Lane capacity ประมาณ?",options:["1000","2000","3000","4000"],answer:1},
+{q:"rigid pavement ใช้วัสดุอะไร",options:["คอนกรีต","ทราย","ดิน","none"],a:0},
+{q:"subbase มีหน้าที่อะไร",options:["รองรับ+ระบายน้ำ","lane","speed","none"],a:0},
+{q:"overlay ใช้เพื่ออะไร",options:["เพิ่มอายุถนน","speed","lane","none"],a:0},
+{q:"skid resistance คืออะไร",options:["ความปลอดภัย","speed","lane","none"],a:0},
+{q:"access control มีผลอย่างไร",options:["ลดจุดตัด","เพิ่ม","none","random"],a:0},
 
-{q:"Flexible pavement คือ?",options:["Rigid","กระจายแรง","แตกง่าย","None"],answer:1},
-{q:"Rigid pavement คือ?",options:["Concrete","Asphalt","Soil","Gravel"],answer:0},
-{q:"Subbase มีหน้าที่?",options:["Support","Drainage","Load","ทั้งหมด"],answer:3},
-{q:"Base course คือ?",options:["Load","Drainage","Support","ทั้งหมด"],answer:3},
-{q:"Rutting คือ?",options:["เสียรูป","แตก","ล้า","None"],answer:0},
+{q:"expressway มีลักษณะอย่างไร",options:["ควบคุมเข้าออก","local","none","random"],a:0},
+{q:"collector road มีหน้าที่อะไร",options:["เชื่อมเส้นทาง","speed","lane","none"],a:0},
+{q:"SSD ขึ้นกับอะไร",options:["speed,time,friction","lane","width","none"],a:0},
+{q:"cross slope ปกติเท่าไร",options:["2%","1%","5%","none"],a:0},
+{q:"transition curve ใช้เพื่ออะไร",options:["ลด jerk","speed","lane","none"],a:0},
 
-{q:"Overlay ใช้เพื่อ?",options:["Repair","Strengthen","Extend","ทั้งหมด"],answer:3},
-{q:"Skid resistance คือ?",options:["Safety","Speed","Cost","Slope"],answer:0},
-{q:"Access control คือ?",options:["จำกัดเข้าออก","Speed","Width","Slope"],answer:0},
-{q:"Expressway คือ?",options:["Access control","Local","Rural","Collector"],answer:0},
-{q:"Collector คือ?",options:["เชื่อม","Speed","Access","Highway"],answer:0},
+{q:"overtaking sight distance ใช้เมื่อใด",options:["แซง","หยุด","none","random"],a:0},
+{q:"traffic lane คืออะไร",options:["ช่องจราจร","ไหล่ทาง","none","random"],a:0},
+{q:"ROW คืออะไร",options:["เขตทาง","ป่า","น้ำ","none"],a:0},
+{q:"safety factor ใช้เพื่ออะไร",options:["ลดความเสี่ยง","speed","lane","none"],a:0},
+{q:"drainage สำคัญเพราะอะไร",options:["ป้องกันน้ำ","speed","lane","none"],a:0},
 
-/* ===== TRAFFIC (51–80) ===== */
-{q:"Conflict ที่อันตรายสุด?",options:["Merge","Diverge","Crossing","Weaving"],answer:2},
-{q:"LOS ใช้อะไรวัด?",options:["Speed","Density","Volume","Time"],answer:1},
-{q:"Density สูงหมายถึง?",options:["โล่ง","ติด","เร็ว","None"],answer:1},
-{q:"Flow = ?",options:["q","v","k","t"],answer:0},
-{q:"q = kv ถูกหรือไม่?",options:["ถูก","ผิด","ไม่แน่","None"],answer:0},
+{q:"design consistency คืออะไร",options:["ความสม่ำเสมอ","speed","lane","none"],a:0},
+{q:"accident rate ใช้เพื่ออะไร",options:["วิเคราะห์อุบัติเหตุ","speed","lane","none"],a:0},
+{q:"functional classification ใช้เพื่ออะไร",options:["แบ่งหน้าที่ถนน","speed","lane","none"],a:0},
+{q:"arterial road มีหน้าที่อะไร",options:["รองรับปริมาณสูง","local","none","random"],a:0},
+{q:"local road มีหน้าที่อะไร",options:["เข้าถึงพื้นที่","speed","none","random"],a:0},
 
-{q:"Peak hour factor คือ?",options:["Distribution","Speed","Density","Volume"],answer:0},
-{q:"Weaving คือ?",options:["Crossing","Merge+Diverge","Stop","Signal"],answer:1},
-{q:"Gap acceptance ใช้ใน?",options:["Merge","Cross","Diverge","ทั้งหมด"],answer:3},
-{q:"Signal ใช้เพื่อ?",options:["Control","Speed","Slope","None"],answer:0},
-{q:"Yellow time คือ?",options:["เตือน","หยุด","ไป","None"],answer:0},
+/* ===== TRAFFIC (41–70) ===== */
+{q:"LOS ลดลงเกิดจากอะไร",options:["density เพิ่ม","speed เพิ่ม","none","random"],a:0},
+{q:"density สูงหมายถึงอะไร",options:["รถหนาแน่น","โล่ง","none","random"],a:0},
+{q:"traffic volume คืออะไร",options:["จำนวนรถ","speed","none","random"],a:0},
+{q:"headway คืออะไร",options:["ช่วงเวลา","ระยะ","none","random"],a:0},
+{q:"queue คืออะไร",options:["รถติด","โล่ง","none","random"],a:0},
 
-{q:"Sight triangle ใช้เพื่อ?",options:["Safety","Speed","Slope","Width"],answer:0},
-{q:"Speed-flow relationship?",options:["ตรง","ผกผัน","ไม่เกี่ยว","None"],answer:1},
-{q:"Volume คือ?",options:["จำนวนรถ","ความเร็ว","เวลา","None"],answer:0},
-{q:"Headway คือ?",options:["ระยะเวลา","ระยะทาง","ความเร็ว","None"],answer:0},
-{q:"Queue คือ?",options:["รถติด","โล่ง","เร็ว","None"],answer:0},
+{q:"conflict อันตรายสุดคืออะไร",options:["crossing","merge","none","random"],a:0},
+{q:"weaving คืออะไร",options:["merge+diverge","cross","none","random"],a:0},
+{q:"signal ใช้เพื่ออะไร",options:["ควบคุมจราจร","speed","none","random"],a:0},
+{q:"yellow time คืออะไร",options:["เตือน","หยุด","none","random"],a:0},
+{q:"peak hour คืออะไร",options:["ช่วงรถหนาแน่น","โล่ง","none","random"],a:0},
 
-/* ===== SURVEY (81–100) ===== */
-{q:"Backsight ใช้?",options:["อ้างอิง","สุดท้าย","สุ่ม","None"],answer:0},
-{q:"Foresight ใช้?",options:["จุดใหม่","จุดเก่า","สุ่ม","None"],answer:0},
-{q:"Benchmark คือ?",options:["ระดับอ้างอิง","Slope","Volume","None"],answer:0},
-{q:"Traverse ใช้?",options:["พิกัด","Slope","Load","None"],answer:0},
-{q:"Station 1+000 = ?",options:["1000 m","100 m","10 m","1 m"],answer:0},
+{q:"speed-density relation เป็นอย่างไร",options:["ผกผัน","ตรง","none","random"],a:0},
+{q:"flow คืออะไร",options:["จำนวนรถ","speed","none","random"],a:0},
+{q:"gap acceptance ใช้ในอะไร",options:["intersection","speed","none","random"],a:0},
+{q:"traffic control device คืออะไร",options:["sign/signal","lane","none","random"],a:0},
+{q:"sight triangle ใช้เพื่ออะไร",options:["ความปลอดภัย","speed","none","random"],a:0},
 
-{q:"Chainage คือ?",options:["ระยะ","Slope","Speed","Load"],answer:0},
-{q:"Theodolite ใช้?",options:["Angle","Height","Slope","Load"],answer:0},
-{q:"Total station ใช้?",options:["Distance+Angle","Slope","Speed","Soil"],answer:0},
-{q:"GPS survey ใช้?",options:["Coordinate","Slope","Speed","Load"],answer:0},
-{q:"Error มีแบบ?",options:["Random","Systematic","Gross","ทั้งหมด"],answer:3},
+{q:"queue length คืออะไร",options:["ความยาวคิว","speed","none","random"],a:0},
+{q:"average speed คืออะไร",options:["ค่าเฉลี่ย","สูงสุด","none","random"],a:0},
+{q:"free flow speed คืออะไร",options:["ไม่มีรบกวน","ติด","none","random"],a:0},
+{q:"jam density คืออะไร",options:["หนาแน่นสูงสุด","ต่ำ","none","random"],a:0},
+{q:"traffic delay คืออะไร",options:["เวลาสูญเสีย","speed","none","random"],a:0},
 
-/* ===== SOIL (101–115) ===== */
-{q:"CBR คือ?",options:["Soil strength","Speed","Slope","Volume"],answer:0},
-{q:"Compaction คือ?",options:["Density","Speed","Slope","Load"],answer:0},
-{q:"Optimum moisture คือ?",options:["Compaction","Speed","Slope","Load"],answer:0},
-{q:"Shear strength คือ?",options:["Soil","Speed","Slope","Load"],answer:0},
-{q:"Bearing capacity คือ?",options:["Soil","Speed","Slope","Load"],answer:0},
+{q:"capacity คืออะไร",options:["ปริมาณสูงสุด","speed","none","random"],a:0},
+{q:"PHF คืออะไร",options:["peak hour factor","speed","none","random"],a:0},
+{q:"lane เพิ่มมีผลอะไร",options:["capacity เพิ่ม","speed ลด","none","random"],a:0},
+{q:"signal spacing มีผลอะไร",options:["delay","speed","none","random"],a:0},
+{q:"intersection control มีแบบใด",options:["signal/stop","none","random","none"],a:0},
 
-{q:"Clay คือ?",options:["Plastic","Rigid","Granular","None"],answer:0},
-{q:"Sand คือ?",options:["Granular","Plastic","Rigid","None"],answer:0},
-{q:"Permeability คือ?",options:["Water flow","Speed","Slope","Load"],answer:0},
-{q:"Consolidation คือ?",options:["Settlement","Speed","Slope","Load"],answer:0},
-{q:"Plasticity index = ?",options:["LL-PL","PL-LL","Sum","None"],answer:0},
+{q:"roundabout ลดอะไร",options:["conflict","speed","none","random"],a:0},
+{q:"merge area คืออะไร",options:["รวมช่อง","แยก","none","random"],a:0},
+{q:"diverge คืออะไร",options:["แยกช่อง","รวม","none","random"],a:0},
+{q:"traffic safety ขึ้นกับอะไร",options:["human/road/vehicle","none","random","none"],a:0},
+{q:"human factor คืออะไร",options:["ผู้ขับขี่","ถนน","รถ","none"],a:0},
 
-/* ===== LAW (116–120) ===== */
-{q:"พ.ร.บ.ทางหลวงปี?",options:["2525","2535","2545","2555"],answer:1},
-{q:"หน่วยงานดูแล?",options:["กรมทางหลวง","โยธา","ขนส่ง","อบต"],answer:0},
-{q:"ROW คือ?",options:["เขตทาง","เขตเมือง","ป่า","น้ำ"],answer:0},
-{q:"ประเภททางหลวง?",options:["3","4","5","6"],answer:2},
-{q:"ทางหลวงชนบท?",options:["กรมทางหลวงชนบท","โยธา","เทศบาล","อบต"],answer:0}
+/* ===== SURVEY (71–90) ===== */
+{q:"benchmark คืออะไร",options:["จุดอ้างอิงระดับ","speed","none","random"],a:0},
+{q:"backsight ใช้เพื่ออะไร",options:["อ้างอิง","none","random","none"],a:0},
+{q:"foresight ใช้เพื่ออะไร",options:["หาค่าใหม่","none","random","none"],a:0},
+{q:"traverse ใช้เพื่ออะไร",options:["หาพิกัด","none","random","none"],a:0},
+{q:"station ใช้เพื่ออะไร",options:["กำหนดตำแหน่ง","none","random","none"],a:0},
+
+{q:"ระยะ 2+150 ถึง 5+300 เท่ากับ",options:["3150 m","2150","5300","none"],a:0},
+{q:"chainage คืออะไร",options:["ระยะตามแนว","none","random","none"],a:0},
+{q:"theodolite ใช้ทำอะไร",options:["วัดมุม","none","random","none"],a:0},
+{q:"total station ใช้ทำอะไร",options:["วัดระยะ+มุม","none","random","none"],a:0},
+{q:"GPS survey ใช้ทำอะไร",options:["พิกัด","none","random","none"],a:0},
+
+{q:"error มีกี่ประเภท",options:["random/systematic/gross","none","random","none"],a:0},
+{q:"leveling ใช้เพื่ออะไร",options:["หาระดับ","none","random","none"],a:0},
+{q:"instrument height คืออะไร",options:["ระดับเครื่อง","none","random","none"],a:0},
+{q:"reduced level คืออะไร",options:["ระดับคำนวณ","none","random","none"],a:0},
+{q:"closing error คืออะไร",options:["ความคลาดเคลื่อน","none","random","none"],a:0},
+
+{q:"map scale คืออะไร",options:["อัตราส่วน","none","random","none"],a:0},
+{q:"contour line คืออะไร",options:["เส้นระดับ","none","random","none"],a:0},
+{q:"azimuth คืออะไร",options:["มุมทิศ","none","random","none"],a:0},
+{q:"bearing คืออะไร",options:["ทิศทาง","none","random","none"],a:0},
+{q:"control point คืออะไร",options:["จุดควบคุม","none","random","none"],a:0},
+
+/* ===== SOIL + LAW (91–120) ===== */
+{q:"CBR ต่ำส่งผลอะไร",options:["ต้องเพิ่ม thickness","none","random","none"],a:0},
+{q:"compaction ดีส่งผลอะไร",options:["strength เพิ่ม","none","random","none"],a:0},
+{q:"permeability สูงหมายถึงอะไร",options:["น้ำผ่านง่าย","none","random","none"],a:0},
+{q:"bearing capacity ต่ำเกิดอะไร",options:["ทรุดตัว","none","random","none"],a:0},
+{q:"plasticity index สูงคืออะไร",options:["ดินเหนียว","none","random","none"],a:0},
+
+{q:"clay มีลักษณะอย่างไร",options:["plastic","none","random","none"],a:0},
+{q:"sand มีลักษณะอย่างไร",options:["granular","none","random","none"],a:0},
+{q:"consolidation คืออะไร",options:["ทรุดตัว","none","random","none"],a:0},
+{q:"void ratio คืออะไร",options:["ช่องว่าง","none","random","none"],a:0},
+{q:"unit weight คืออะไร",options:["น้ำหนัก/ปริมาตร","none","random","none"],a:0},
+
+{q:"ทางหลวงแผ่นดินมีหน้าที่อะไร",options:["เชื่อมภูมิภาค","none","random","none"],a:0},
+{q:"ROW สำคัญเพราะอะไร",options:["กำหนดเขตทาง","none","random","none"],a:0},
+{q:"การเวนคืนมีไว้เพื่ออะไร",options:["สร้างทาง","none","random","none"],a:0},
+{q:"access control ช่วยอะไร",options:["เพิ่มความปลอดภัย","none","random","none"],a:0},
+{q:"traffic law มีไว้เพื่ออะไร",options:["ความปลอดภัย","none","random","none"],a:0},
+
+{q:"road marking ใช้เพื่ออะไร",options:["กำหนดช่อง","none","random","none"],a:0},
+{q:"traffic sign ใช้เพื่ออะไร",options:["สื่อสาร","none","random","none"],a:0},
+{q:"highway safety มีเป้าหมายอะไร",options:["ลดอุบัติเหตุ","none","random","none"],a:0},
+{q:"design ต้องคำนึงถึงอะไร",options:["safety","speed","cost","ทั้งหมด"],a:3},
+{q:"ปัจจัยหลักของ road safety คืออะไร",options:["human/road/vehicle","none","random","none"],a:0}
+];
 
 ];
 
-const quizDiv = document.getElementById("quiz");
-
-questions.forEach((q,i)=>{
-  const div=document.createElement("div");
-  div.className="question";
-  div.innerHTML = `<p>${i+1}. ${q.q}</p>` +
-    q.options.map((opt,idx)=>
-      `<label><input type='radio' name='q${i}' value='${idx}'> ${opt}</label><br>`
-    ).join("");
-  quizDiv.appendChild(div);
-});
-
-function submitQuiz(){
-  let score=0;
-  questions.forEach((q,i)=>{
-    const ans=document.querySelector(`input[name=q${i}]:checked`);
-    if(ans && parseInt(ans.value)===q.answer) score++;
+function render(){
+ const quiz=document.getElementById("quiz");
+ quiz.innerHTML="";
+ questions.forEach((q,i)=>{
+  let html=`<div class='card'><b>${i+1}. ${q.q}</b>`;
+  q.options.forEach((opt,j)=>{
+    html+=`<div><input type='radio' name='q${i}' value='${j}'> ${opt}</div>`;
   });
-
-  document.getElementById("result").innerText =
-    `คะแนนของคุณ: ${score}/${questions.length}`;
-
-  // เก็บข้อมูล (Google Sheet)
-  fetch("https://script.google.com/macros/s/AKfycbxjV9w1D1z_sZgTb4yy8uDTE0kbLFbthUVYvTYJAK-nmOgjoxxocY22LMoOkjxWpSwv/exec", {
-    method:"POST",
-    body: JSON.stringify({
-      email:userEmail,
-      score:score
-    })
-  });
+  html+="</div>";
+  quiz.innerHTML+=html;
+ });
+ quiz.innerHTML+=`<button onclick="submitExam()">ส่งคำตอบ</button>`;
 }
-</script>
 
+function submitExam(){
+ let score=0;
+ questions.forEach((q,i)=>{
+  const ans=document.querySelector(`input[name=q${i}]:checked`);
+  if(ans && parseInt(ans.value)===q.a) score++;
+ });
+
+ const email=localStorage.getItem("user_email");
+
+ // 👉 เก็บลง Google Form (แก้ URL เอง)
+ fetch("https://docs.google.com/forms/d/e/XXXX/formResponse",{
+  method:"POST",
+  mode:"no-cors",
+  body:new URLSearchParams({
+    "entry.123456":email,
+    "entry.654321":score
+  })
+ });
+
+ document.getElementById("result").innerHTML=
+ `<div class='card'><h2>คะแนนของคุณ: ${score}/${questions.length}</h2></div>`;
+}
+
+</script>
 </body>
 </html>
