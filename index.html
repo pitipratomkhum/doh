@@ -175,9 +175,107 @@ function unlockExam(){
 }
 
 const questions = [
-  {q:"ถนนที่ mobility สูงสุดคืออะไร?", options:["Local","Collector","Arterial","Expressway"], answer:3},
-  {q:"Superelevation ใช้ลดอะไร?", options:["แรงต้าน","แรงเหวี่ยง","ความเร็ว","slope"], answer:1},
-  {q:"Reaction time มาตรฐานเท่าไร?", options:["1","1.5","2.5","3.5"], answer:2}
+
+/* ===== HIGHWAY (1–50) ===== */
+{q:"ถนนที่ mobility สูงสุดคือ?",options:["Local","Collector","Arterial","Expressway"],answer:3},
+{q:"ถนนที่ accessibility สูงสุดคือ?",options:["Local","Collector","Arterial","Expressway"],answer:0},
+{q:"Superelevation ใช้ลดอะไร?",options:["แรงต้าน","แรงเหวี่ยง","แรงเสียดทาน","Slope"],answer:1},
+{q:"Reaction time มาตรฐาน?",options:["1.0","1.5","2.5","3.5"],answer:2},
+{q:"SSD ประกอบด้วย?",options:["Reaction+Braking","Speed+Time","Slope+Curve","Width"],answer:0},
+{q:"Overtaking sight distance ใช้เมื่อ?",options:["หยุด","แซง","เลี้ยว","กลับรถ"],answer:1},
+{q:"Curve ที่อันตรายสุด?",options:["Simple","Reverse","Compound","Broken back"],answer:1},
+{q:"Lane width มาตรฐาน?",options:["2.5","3.0","3.5","4.0"],answer:2},
+{q:"Camber ใช้เพื่อ?",options:["Drainage","Speed","Safety","Load"],answer:0},
+{q:"Cross slope โดยทั่วไป?",options:["1%","2%","5%","10%"],answer:1},
+
+{q:"Radius มากขึ้นจะเกิดอะไร?",options:["แคบ","กว้าง","อันตราย","ไม่เปลี่ยน"],answer:1},
+{q:"e_max ประมาณ?",options:["0.04","0.06","0.08","0.12"],answer:2},
+{q:"Design speed คือ?",options:["เฉลี่ย","ปลอดภัย","สูงสุด","ต่ำสุด"],answer:1},
+{q:"Stopping sight distance ขึ้นกับ?",options:["Speed","Time","Friction","ทั้งหมด"],answer:3},
+{q:"Friction factor ส่งผลต่อ?",options:["Width","SSD","Slope","Lane"],answer:1},
+
+{q:"Horizontal curve ใช้ควบคุม?",options:["แนวราบ","แนวดิ่ง","Slope","Load"],answer:0},
+{q:"Vertical curve ใช้ควบคุม?",options:["Slope","Speed","Lane","Load"],answer:0},
+{q:"Crest curve เกี่ยวกับ?",options:["จุดสูง","จุดต่ำ","Slope","Lane"],answer:0},
+{q:"Sag curve เกี่ยวกับ?",options:["จุดต่ำ","จุดสูง","Slope","Speed"],answer:0},
+{q:"Design vehicle ใช้เพื่อ?",options:["Curve","Lane","Clearance","ทั้งหมด"],answer:3},
+
+{q:"Minimum radius ขึ้นกับ?",options:["Speed","e","f","ทั้งหมด"],answer:3},
+{q:"Shoulder ใช้เพื่อ?",options:["Safety","Parking","Drainage","ทั้งหมด"],answer:3},
+{q:"Median ใช้เพื่อ?",options:["แยกทิศ","ลดอุบัติเหตุ","Reserve","ทั้งหมด"],answer:3},
+{q:"AADT คือ?",options:["เฉลี่ยรายปี","สูงสุด","ต่ำสุด","ชั่วโมง"],answer:0},
+{q:"Design hour volume คือ?",options:["Peak","Average","Min","None"],answer:0},
+
+{q:"Grade สูงจะ?",options:["ช้าลง","เร็วขึ้น","เท่าเดิม","ไม่เกี่ยว"],answer:0},
+{q:"Sight distance สำคัญเพราะ?",options:["Safety","Speed","Cost","Design"],answer:0},
+{q:"Alignment ที่ดีต้อง?",options:["สั้น","ตรง","ปลอดภัย","ทั้งหมด"],answer:3},
+{q:"Functional classification คือ?",options:["Mobility","Access","ทั้งสอง","None"],answer:2},
+{q:"Lane capacity ประมาณ?",options:["1000","2000","3000","4000"],answer:1},
+
+{q:"Flexible pavement คือ?",options:["Rigid","กระจายแรง","แตกง่าย","None"],answer:1},
+{q:"Rigid pavement คือ?",options:["Concrete","Asphalt","Soil","Gravel"],answer:0},
+{q:"Subbase มีหน้าที่?",options:["Support","Drainage","Load","ทั้งหมด"],answer:3},
+{q:"Base course คือ?",options:["Load","Drainage","Support","ทั้งหมด"],answer:3},
+{q:"Rutting คือ?",options:["เสียรูป","แตก","ล้า","None"],answer:0},
+
+{q:"Overlay ใช้เพื่อ?",options:["Repair","Strengthen","Extend","ทั้งหมด"],answer:3},
+{q:"Skid resistance คือ?",options:["Safety","Speed","Cost","Slope"],answer:0},
+{q:"Access control คือ?",options:["จำกัดเข้าออก","Speed","Width","Slope"],answer:0},
+{q:"Expressway คือ?",options:["Access control","Local","Rural","Collector"],answer:0},
+{q:"Collector คือ?",options:["เชื่อม","Speed","Access","Highway"],answer:0},
+
+/* ===== TRAFFIC (51–80) ===== */
+{q:"Conflict ที่อันตรายสุด?",options:["Merge","Diverge","Crossing","Weaving"],answer:2},
+{q:"LOS ใช้อะไรวัด?",options:["Speed","Density","Volume","Time"],answer:1},
+{q:"Density สูงหมายถึง?",options:["โล่ง","ติด","เร็ว","None"],answer:1},
+{q:"Flow = ?",options:["q","v","k","t"],answer:0},
+{q:"q = kv ถูกหรือไม่?",options:["ถูก","ผิด","ไม่แน่","None"],answer:0},
+
+{q:"Peak hour factor คือ?",options:["Distribution","Speed","Density","Volume"],answer:0},
+{q:"Weaving คือ?",options:["Crossing","Merge+Diverge","Stop","Signal"],answer:1},
+{q:"Gap acceptance ใช้ใน?",options:["Merge","Cross","Diverge","ทั้งหมด"],answer:3},
+{q:"Signal ใช้เพื่อ?",options:["Control","Speed","Slope","None"],answer:0},
+{q:"Yellow time คือ?",options:["เตือน","หยุด","ไป","None"],answer:0},
+
+{q:"Sight triangle ใช้เพื่อ?",options:["Safety","Speed","Slope","Width"],answer:0},
+{q:"Speed-flow relationship?",options:["ตรง","ผกผัน","ไม่เกี่ยว","None"],answer:1},
+{q:"Volume คือ?",options:["จำนวนรถ","ความเร็ว","เวลา","None"],answer:0},
+{q:"Headway คือ?",options:["ระยะเวลา","ระยะทาง","ความเร็ว","None"],answer:0},
+{q:"Queue คือ?",options:["รถติด","โล่ง","เร็ว","None"],answer:0},
+
+/* ===== SURVEY (81–100) ===== */
+{q:"Backsight ใช้?",options:["อ้างอิง","สุดท้าย","สุ่ม","None"],answer:0},
+{q:"Foresight ใช้?",options:["จุดใหม่","จุดเก่า","สุ่ม","None"],answer:0},
+{q:"Benchmark คือ?",options:["ระดับอ้างอิง","Slope","Volume","None"],answer:0},
+{q:"Traverse ใช้?",options:["พิกัด","Slope","Load","None"],answer:0},
+{q:"Station 1+000 = ?",options:["1000 m","100 m","10 m","1 m"],answer:0},
+
+{q:"Chainage คือ?",options:["ระยะ","Slope","Speed","Load"],answer:0},
+{q:"Theodolite ใช้?",options:["Angle","Height","Slope","Load"],answer:0},
+{q:"Total station ใช้?",options:["Distance+Angle","Slope","Speed","Soil"],answer:0},
+{q:"GPS survey ใช้?",options:["Coordinate","Slope","Speed","Load"],answer:0},
+{q:"Error มีแบบ?",options:["Random","Systematic","Gross","ทั้งหมด"],answer:3},
+
+/* ===== SOIL (101–115) ===== */
+{q:"CBR คือ?",options:["Soil strength","Speed","Slope","Volume"],answer:0},
+{q:"Compaction คือ?",options:["Density","Speed","Slope","Load"],answer:0},
+{q:"Optimum moisture คือ?",options:["Compaction","Speed","Slope","Load"],answer:0},
+{q:"Shear strength คือ?",options:["Soil","Speed","Slope","Load"],answer:0},
+{q:"Bearing capacity คือ?",options:["Soil","Speed","Slope","Load"],answer:0},
+
+{q:"Clay คือ?",options:["Plastic","Rigid","Granular","None"],answer:0},
+{q:"Sand คือ?",options:["Granular","Plastic","Rigid","None"],answer:0},
+{q:"Permeability คือ?",options:["Water flow","Speed","Slope","Load"],answer:0},
+{q:"Consolidation คือ?",options:["Settlement","Speed","Slope","Load"],answer:0},
+{q:"Plasticity index = ?",options:["LL-PL","PL-LL","Sum","None"],answer:0},
+
+/* ===== LAW (116–120) ===== */
+{q:"พ.ร.บ.ทางหลวงปี?",options:["2525","2535","2545","2555"],answer:1},
+{q:"หน่วยงานดูแล?",options:["กรมทางหลวง","โยธา","ขนส่ง","อบต"],answer:0},
+{q:"ROW คือ?",options:["เขตทาง","เขตเมือง","ป่า","น้ำ"],answer:0},
+{q:"ประเภททางหลวง?",options:["3","4","5","6"],answer:2},
+{q:"ทางหลวงชนบท?",options:["กรมทางหลวงชนบท","โยธา","เทศบาล","อบต"],answer:0}
+
 ];
 
 const quizDiv = document.getElementById("quiz");
